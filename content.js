@@ -1,26 +1,30 @@
+let isEnabled = true;
+let replacements = [];
+
 function replaceText(node, originalText, replacementText, wordBoundary = false) {
-    if (node.nodeType === Node.TEXT_NODE) {
-      const regex = new RegExp(originalText, wordBoundary ? '\\b' : 'g');
+  if (node.nodeType === Node.TEXT_NODE) {
+    const regex = new RegExp(originalText, wordBoundary ? '\\b' : 'g');
+    if (regex.test(node.textContent)) {
+      const originalContent = node.textContent;
       node.textContent = node.textContent.replace(regex, replacementText);
-    } else if (node.nodeType === Node.ELEMENT_NODE) {
-      for (let child of node.childNodes) {
-        replaceText(child, originalText, replacementText, wordBoundary);
-      }
+      replacements.push({ node, originalContent });
+    }
+  } else if (node.nodeType === Node.ELEMENT_NODE) {
+    for (let child of node.childNodes) {
+      replaceText(child, originalText, replacementText, wordBoundary);
     }
   }
-  
-  function updateIcon() {
-    const iconPaths = {
-      "16": isEnabled ? "icons/icon_enable16.png" : "icons/icon_disable16.png",
-      "32": isEnabled ? "icons/icon_enable32.png" : "icons/icon_disable32.png",
-      "48": isEnabled ? "icons/icon_enable48.png" : "icons/icon_disable48.png",
-      "96": isEnabled ? "icons/icon_enable96.png" : "icons/icon_disable96.png"
-    };
-    chrome.browserAction.setIcon({ path: iconPaths });
-  }
+}
 
-  chrome.storage.local.get("enabled", function (data) {
-    if (data.enabled) {
+function revertReplacements() {
+  for (let { node, originalContent } of replacements) {
+    node.textContent = originalContent;
+  }
+  replacements = [];
+}
+
+function enableAddon() {
+  if (isEnabled) {
   
   replaceText(document.body, 'ざぁ～こ♡', 'メスガキ');
   replaceText(document.body, '合意なし', 'レイプ');
@@ -47,6 +51,29 @@ function replaceText(node, originalText, replacementText, wordBoundary = false) 
   replaceText(document.body, 'トランスボイス', '催眠音声');
   replaceText(document.body, '暗示ボイス', '催眠音声');
 
-  replaceText(document.body, 'CrackerJaxx', '↑こいつはバカ');
+  //このしたのコメントを外すと声優さんに申し訳ないのでコメントアウト確定。すまんこ！
+  //replaceText(document.body, 'CrackerJaxx', '↑こいつはバカ');
 }
+}
+
+function disableAddon() {
+  revertReplacements();
+}
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  if (request.action === "toggleEnabled") {
+    isEnabled = request.enabled;
+    if (isEnabled) {
+      enableAddon();
+    } else {
+      disableAddon();
+    }
+  }
+});
+
+chrome.storage.local.get("enabled", function (data) {
+  isEnabled = data.enabled;
+  if (isEnabled) {
+    enableAddon();
+  }
 });
