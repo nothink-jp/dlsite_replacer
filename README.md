@@ -3,9 +3,10 @@
 Firefox用。42〜対応。たぶん。Chromeとかも多分ちょっと書き換えれば動くよ。しらんけど。
 
 雑。さすがに文字列が文字列だけにFirefoxのadd-on置き場に置かれるはずもなく野良リリース。
-バイナリ…というかドラッグアンドドロップでインストールできる.xpiファイルは右側のReleaseより。
+バイナリ…というかドラッグアンドドロップでインストールできるxpiファイルは右側のReleaseより。
+https://github.com/crackerjacques/dlsite_replacer/releases/tag/Release
 
-インストールできないとか必ず言われると思うのだが、URL欄にa
+インストールできないとか必ず言われると思うのだが、URL欄に
 ```
 about:config
 ```
