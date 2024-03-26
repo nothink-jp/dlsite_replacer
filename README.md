@@ -23,7 +23,8 @@ false
 ```
 にする。
 そうすると「危ないかもしれないから気をつけろ」とかいわれるけど、危ないかどうかは拡張子をzipにするとか、7zipかなにかで展開して中身みりゃ良い。
-
+https://github.com/crackerjacques/dlsite_replacer/blob/main/img/ss01.png
+![IMG](https://github.com/crackerjacques/dlsite_replacer/blob/main/img/ss01.png?raw=true)
 
 ライセンスについてはWTFPLでおねがいします。
 
