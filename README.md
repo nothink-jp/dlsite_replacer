@@ -23,7 +23,8 @@ xpinstall.signatures.required
 false
 ```
 にする。
-そうすると「危ないかもしれないから気をつけろ」とかいわれるけど、危ないかどうかは拡張子をzipにするとか、7zipかなにかで展開して中身みりゃ良い。
+そうすると「危ないかもしれないから気をつけろ」とかいわれるけどインストール可能になる。
+危ないかどうかは拡張子をzipにするとか、7zipかなにかで展開して中身みりゃ良い。いかがわしい用途に使うものだが内容自体はいかがわしくない。
 https://github.com/crackerjacques/dlsite_replacer/blob/main/img/ss01.png
 ![IMG](https://github.com/crackerjacques/dlsite_replacer/blob/main/img/ss01.png?raw=true)
 
