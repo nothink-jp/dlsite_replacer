@@ -5,7 +5,7 @@ function replaceText(node, wordMap) {
   if (node.nodeType === Node.TEXT_NODE) {
     let content = node.textContent;
     for (let [originalText, replacementText] of wordMap) {
-      const regex = new RegExp(`\\b(?:${originalText})\\b`, 'g');
+      const regex = new RegExp(originalText, 'g');
       if (regex.test(content)) {
         const originalContent = content;
         content = content.replace(regex, replacementText);
@@ -53,42 +53,42 @@ function processDocument() {
     ['虫えっち', '蟲姦'],
     ['触手えっち', '触手姦'],
     ['すやすやえっち', '睡眠姦'],
-    ['トランスボイス|暗示ボイス|トランス音声|暗示音声', '催眠音声'],
+    ['暗示ボイス', '催眠音声'],
+    ['トランスボイス', '催眠音声'],
     ['つるぺた', 'ロリ'],
     ['畜えち', '獣姦'],
+    
+    //['crackerjaxx', 'モロヘイヤを食う悪魔'],
+    //['ダウナー', 'アッパー'],
+  ]);
 
-    //テスト用文字列
-    //['crackerjaxx|CrackerJaxx', 'モロヘイヤを食う悪魔'],
-    //  ['ダウナー', 'アッパー'],
-]);
-
-replaceText(document.body, wordMap);
+  replaceText(document.body, wordMap);
 }
 
 function enableAddon() {
-if (isEnabled) {
-  processDocument();
-}
+  if (isEnabled) {
+    processDocument();
+  }
 }
 
 function disableAddon() {
-revertReplacements();
+  revertReplacements();
 }
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-if (request.action === "toggleEnabled") {
-  isEnabled = request.enabled;
-  if (isEnabled) {
-    enableAddon();
-  } else {
-    disableAddon();
+  if (request.action === "toggleEnabled") {
+    isEnabled = request.enabled;
+    if (isEnabled) {
+      enableAddon();
+    } else {
+      disableAddon();
+    }
   }
-}
 });
 
 chrome.storage.local.get("enabled", function (data) {
-isEnabled = data.enabled;
-if (isEnabled) {
-  enableAddon();
-}
+  isEnabled = data.enabled;
+  if (isEnabled) {
+    enableAddon();
+  }
 });
