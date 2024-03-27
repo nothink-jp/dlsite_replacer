@@ -1,17 +1,23 @@
 let isEnabled = true;
 let replacements = [];
 
-function replaceText(node, originalText, replacementText, wordBoundary = false) {
+function replaceText(node, wordMap) {
   if (node.nodeType === Node.TEXT_NODE) {
-    const regex = new RegExp(originalText, wordBoundary ? '\\b' : 'g');
-    if (regex.test(node.textContent)) {
-      const originalContent = node.textContent;
-      node.textContent = node.textContent.replace(regex, replacementText);
-      replacements.push({ node, originalContent });
+    let content = node.textContent;
+    for (let [originalText, replacementText] of wordMap) {
+      const regex = new RegExp(`\\b(?:${originalText})\\b`, 'g');
+      if (regex.test(content)) {
+        const originalContent = content;
+        content = content.replace(regex, replacementText);
+        if (content !== originalContent) {
+          replacements.push({ node, originalContent });
+        }
+      }
     }
+    node.textContent = content;
   } else if (node.nodeType === Node.ELEMENT_NODE) {
     for (let child of node.childNodes) {
-      replaceText(child, originalText, replacementText, wordBoundary);
+      replaceText(child, wordMap);
     }
   }
 }
@@ -23,57 +29,66 @@ function revertReplacements() {
   replacements = [];
 }
 
-function enableAddon() {
-  if (isEnabled) {
-  
-  replaceText(document.body, 'ざぁ～こ♡', 'メスガキ');
-  replaceText(document.body, '合意なし', 'レイプ');
-  replaceText(document.body, 'ひよこ', 'ロリ');
-  replaceText(document.body, 'ひよこババア', 'ロリババア');
-  replaceText(document.body, '閉じ込め', '監禁');
-  replaceText(document.body, '逆レ', '逆レイプ');
-  replaceText(document.body, '命令', '強制');
-  replaceText(document.body, '責め苦', '拷問');
-  replaceText(document.body, '近親もの', '近親相姦');
-  replaceText(document.body, 'トランス', '催眠');
-  replaceText(document.body, '暗示', '催眠');
-  replaceText(document.body, '動物なかよし', '獣姦');
-  replaceText(document.body, '精神支配', '洗脳');
-  replaceText(document.body, '秘密さわさわ', '痴漢');
-  replaceText(document.body, 'しつけ', '調教');
-  replaceText(document.body, '下僕', '奴隷');
-  replaceText(document.body, '屈辱', '凌辱');
-  replaceText(document.body, '回し', '輪姦');
-  replaceText(document.body, '虫えっち', '蟲姦');
-  replaceText(document.body, 'モブおじさん', 'モブ姦');
-  replaceText(document.body, '異種えっち', '異種姦');
-  replaceText(document.body, 'すやすやえっち', '睡眠姦');
-  replaceText(document.body, 'トランスボイス', '催眠音声');
-  replaceText(document.body, '暗示ボイス', '催眠音声');
+function processDocument() {
+  const wordMap = new Map([
+    
+    ['ざぁ〜こ♡', 'メスガキ'],
+    ['合意なし', 'レイプ'],
+    ['閉じ込め', '監禁'],
+    ['超ひどい', '鬼畜'],
+    ['逆レ', '逆レイプ'],
+    ['近親もの', '近親相姦'],
+    ['責め苦', '拷問'],
+    ['暗示', '催眠'],
+    ['トランス', '催眠'],
+    ['精神支配', '洗脳'],
+    ['屈辱', '凌辱'],
+    ['秘密さわさわ', '痴漢'],
+    ['調教', 'しつけ'],
+    ['下僕', '奴隷'],
+    ['回し', '輪姦'],
+    ['モブおじさん', 'モブ姦'],
+    ['異種えっち', '異種姦'],
+    ['機械えっち', '機械姦'],
+    ['虫えっち', '蟲姦'],
+    ['触手えっち', '触手姦'],
+    ['すやすやえっち', '睡眠姦'],
+    ['トランスボイス|暗示ボイス|トランス音声|暗示音声', '催眠音声'],
+    ['つるぺた', 'ロリ'],
+    ['畜えち', '獣姦'],
 
-  //このしたのコメントを外すと声優さんに申し訳ないのでコメントアウト確定。すまんこ！
-  //replaceText(document.body, 'CrackerJaxx', '↑こいつはバカ');
+    //テスト用文字列
+    //['crackerjaxx|CrackerJaxx', 'モロヘイヤを食う悪魔'],
+    //  ['ダウナー', 'アッパー'],
+]);
+
+replaceText(document.body, wordMap);
+}
+
+function enableAddon() {
+if (isEnabled) {
+  processDocument();
 }
 }
 
 function disableAddon() {
-  revertReplacements();
+revertReplacements();
 }
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  if (request.action === "toggleEnabled") {
-    isEnabled = request.enabled;
-    if (isEnabled) {
-      enableAddon();
-    } else {
-      disableAddon();
-    }
+if (request.action === "toggleEnabled") {
+  isEnabled = request.enabled;
+  if (isEnabled) {
+    enableAddon();
+  } else {
+    disableAddon();
   }
+}
 });
 
 chrome.storage.local.get("enabled", function (data) {
-  isEnabled = data.enabled;
-  if (isEnabled) {
-    enableAddon();
-  }
+isEnabled = data.enabled;
+if (isEnabled) {
+  enableAddon();
+}
 });
