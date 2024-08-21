@@ -8,7 +8,7 @@ function escapeRegExp(string) {
 function replaceText(node, wordMap) {
 	if (node.nodeType === Node.TEXT_NODE) {
 		let content = node.textContent;
-		for (let [originalText, replacementText] of wordMap) {
+		for (const [originalText, replacementText] of wordMap) {
 			const regex = new RegExp(escapeRegExp(originalText), "gi");
 			if (regex.test(content)) {
 				const originalContent = content;
@@ -21,7 +21,7 @@ function replaceText(node, wordMap) {
 		node.textContent = content;
 	} else if (node.nodeType === Node.ELEMENT_NODE) {
 		if (node.nodeName !== "SCRIPT" && node.nodeName !== "STYLE") {
-			for (let child of node.childNodes) {
+			for (const child of node.childNodes) {
 				replaceText(child, wordMap);
 			}
 		}
@@ -29,7 +29,7 @@ function replaceText(node, wordMap) {
 }
 
 function revertReplacements() {
-	for (let { node, originalContent } of replacements) {
+	for (const { node, originalContent } of replacements) {
 		node.textContent = originalContent;
 	}
 	replacements = [];
@@ -80,7 +80,7 @@ function disableAddon() {
 	revertReplacements();
 }
 
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 	if (request.action === "toggleEnabled") {
 		isEnabled = request.enabled;
 		if (isEnabled) {
@@ -91,7 +91,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 	}
 });
 
-chrome.storage.local.get("enabled", function (data) {
+chrome.storage.local.get("enabled", (data) => {
 	isEnabled = data.enabled;
 	if (isEnabled) {
 		enableAddon();
